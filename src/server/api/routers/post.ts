@@ -23,7 +23,7 @@ import { Redis } from "@upstash/redis";
 // Create a new ratelimiter, that allows 3 requests per 1 minute
 const ratelimit = new Ratelimit({
   redis: Redis.fromEnv(),
-  limiter: Ratelimit.slidingWindow(10, "10 s"),
+  limiter: Ratelimit.slidingWindow(3, "1 m"),
   analytics: true,
 });
 
@@ -43,8 +43,6 @@ export const postRouter = createTRPCRouter({
         limit: 100,
       })
     ).map(filteredUserForClient);
-
-    console.log(users);
 
     return posts.map((post) => {
       const author = users.find((user) => user.id === post.authorId);
