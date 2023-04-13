@@ -59,7 +59,7 @@ export const postRouter = createTRPCRouter({
           id: input.postId,
         },
       });
-      if (!post) return new TRPCError({code: "NOT_FOUND", message: "No Post exists with that is"})
+      if (!post) throw new TRPCError({code: "NOT_FOUND", message: "No Post exists with that is"})
       return (await appendUserDataToPost([post]))[0]
     }),
   getAll: publicProcedure.query(async ({ ctx }) => {

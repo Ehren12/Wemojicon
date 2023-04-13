@@ -1,0 +1,20 @@
+name: GitHub CI
+on: [push, pull_request]
+env:
+  DATABASE_URL: "https://fakemama.com"
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - uses: pnpm/action-setup@v1.2.1
+        with:
+          version: 6.23.6
+      - name: Install Dependencies
+        run: pnpm install
+      - name: Typecheck
+        run: pnpm run typecheck
+      - name: Lint
+        run: pnpm run lint
