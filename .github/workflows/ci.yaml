@@ -7,7 +7,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: npm install -g pnpm@6.23.6
-      - run: pnpm install
-      - run: pnpm run typecheck
-      - run: pnpm run lint
+
+      - name: Install PNPM
+        run: npm install -g pnpm@6.23.6
+      - name: Install Dependencies
+        run: pnpm install
+      - name: Type Check
+        run: pnpm run typecheck
+      - name: Lint
+        run: pnpm run lint
