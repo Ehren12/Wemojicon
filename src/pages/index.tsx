@@ -45,7 +45,7 @@ const CreatePostWizard = () => {
         priority
       />
       <input
-        placeholder={`${user.firstName} express your feelings with an emoji ${emoji}`}
+        placeholder={`Hi, ${user.firstName} emote your feelings ${emoji}`}
         className="grow bg-transparent outline-none"
         type="string"
         value={input}

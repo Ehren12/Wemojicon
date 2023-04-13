@@ -13,7 +13,21 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
         <title>{data.username}</title>
       </Head>
       <PageLayout>
-        <div className="">{data.username}</div>
+        <div className="relative h-36 bg-slate-600">
+          <Image
+            src={data.profilePicture}
+            alt={`${data.username ?? ""}'s profile picture`}
+            width={1080}
+            height={1080}
+            priority
+            className="absolute h-[128px] w-[128px] bottom-0 left-0 -mb-[64px] ml-4 rounded-full border-4 border-black bg-black"
+          />
+        </div>
+        <div className="h-[64px]"></div>
+        <div className="p-4 text-2xl font-bold">{`@${
+          data.username ?? ""
+        }`}</div>
+        <div className="w-full border-b border-slate-400"></div>
       </PageLayout>
     </>
   );
@@ -24,6 +38,7 @@ import { appRouter } from "~/server/api/root";
 import { prisma } from "~/server/db";
 import superjson from "superjson";
 import { PageLayout } from "~/components/layout";
+import Image from "next/image";
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const ssg = createProxySSGHelpers({
