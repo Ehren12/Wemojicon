@@ -47,6 +47,21 @@ const ratelimit = new Ratelimit({
 });
 
 export const postRouter = createTRPCRouter({
+  getById: publicProcedure
+    .input(
+      z.object({
+        postId: z.string(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const post = await ctx.prisma.post.findUnique({
+        where: {
+          id: input.postId,
+        },
+      });
+      if (!post) return new TRPCError({code: "NOT_FOUND", message: "No Post exists with that is"})
+      return (await appendUserDataToPost([post]))[0]
+    }),
   getAll: publicProcedure.query(async ({ ctx }) => {
     const posts = await ctx.prisma.post.findMany({
       take: 100,
@@ -57,7 +72,7 @@ export const postRouter = createTRPCRouter({
       ],
     });
 
-    return appendUserDataToPost(posts)
+    return appendUserDataToPost(posts);
   }),
   getAllPostsByUserId: publicProcedure
     .input(
@@ -66,13 +81,15 @@ export const postRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) =>
-      ctx.prisma.post.findMany({
-        where: {
-          authorId: input.userId,
-        },
-        take: 100,
-        orderBy: [{ createdAt: "desc" }],
-      }).then(appendUserDataToPost)
+      ctx.prisma.post
+        .findMany({
+          where: {
+            authorId: input.userId,
+          },
+          take: 100,
+          orderBy: [{ createdAt: "desc" }],
+        })
+        .then(appendUserDataToPost)
     ),
   create: privateProcedure
     .input(
