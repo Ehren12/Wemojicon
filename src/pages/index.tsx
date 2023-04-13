@@ -1,7 +1,5 @@
 import { SignInButton, useUser } from "@clerk/nextjs";
 import { type NextPage } from "next";
-import Head from "next/head";
-
 import { type RouterOutputs, api } from "~/utils/api";
 
 import dayjs from "dayjs";
@@ -11,13 +9,15 @@ import { LoadingPage, LoadingSpinner } from "~/components/loading";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import Link from "next/link";
+import { PageLayout } from "~/components/layout";
+import { useEmoji } from "~/helperFunctions";
 
 dayjs.extend(relativeTime);
 
 const CreatePostWizard = () => {
   const { user } = useUser();
+  const {emoji} = useEmoji()
   const [input, setInput] = useState<string>("");
-
   const ctx = api.useContext();
   const { mutate, isLoading: isPosting } = api.posts.create.useMutation({
     onSuccess: () => {
@@ -29,11 +29,11 @@ const CreatePostWizard = () => {
       if (errorMessage && errorMessage[0]) {
         toast.error(errorMessage[0]);
       } else {
-        toast.error("Failed to post! Pleae try again later");
+        toast.error("Failed to post your emoji 😔. Try again later!");
       }
     },
   });
-  if (!user) return null;
+  if (!user || !user.firstName) return null;
   return (
     <div className="flex w-full gap-3">
       <Image
@@ -45,7 +45,7 @@ const CreatePostWizard = () => {
         priority
       />
       <input
-        placeholder="Type some emojis!"
+        placeholder={`${user.firstName} express your feelings with an emoji ${emoji}`}
         className="grow bg-transparent outline-none"
         type="string"
         value={input}
@@ -120,31 +120,23 @@ const Feed = () => {
 
 const Home: NextPage = () => {
   const { isLoaded: userLoaded, isSignedIn } = useUser();
-  // Start fetching immediately
+  const emoji = useEmoji();
+    // Start fetching immediately
   api.posts.getAll.useQuery();
   //Return empty div if user isn't loaded yet
-  if (!userLoaded) return <div />;
+  if (!userLoaded) return <div className="flex h-screen w-screen justify-center items-center text-6xl">{emoji.emoji}</div>;
   return (
-    <>
-      <Head>
-        <title>Create T3 App</title>
-        <meta name="description" content="Express yourself with just emojis" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <main className="flex h-screen justify-center">
-        <div className="w-full border-x border-slate-400 md:max-w-2xl">
-          <div className="flex border-b border-slate-400 p-4">
-            {!isSignedIn && (
-              <div className="flex justify-center">
-                <SignInButton />
-              </div>
-            )}
-            {isSignedIn && <CreatePostWizard />}
+    <PageLayout>
+      <div className="flex border-b border-slate-400 p-4">
+        {!isSignedIn && (
+          <div className="flex justify-center">
+            <SignInButton />
           </div>
-          <Feed />
-        </div>
-      </main>
-    </>
+        )}
+        {isSignedIn && <CreatePostWizard />}
+      </div>
+      <Feed />
+    </PageLayout>
   );
 };
 

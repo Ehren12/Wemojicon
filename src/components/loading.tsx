@@ -1,4 +1,6 @@
-export const LoadingSpinner = (props: {size?: number}) => {
+import { useEmoji } from "~/helperFunctions";
+
+export const LoadingSpinner = (props: { size?: number }) => {
   return (
     <div role="status">
       <svg
@@ -25,5 +27,15 @@ export const LoadingSpinner = (props: {size?: number}) => {
 };
 
 export const LoadingPage = () => {
-    return <div className="absolute top-0 right-0 w-screen h-screen flex justify-center items-center"><LoadingSpinner size={60}/></div>
-}
+  const {emoji} = useEmoji()
+  return (
+    <>
+      <div className="absolute right-0 top-0 flex flex-col gap-5 h-screen w-screen items-center justify-center">
+        {/* <div className="flex items-center justify-center text-6xl">
+          {emoji}
+        </div> */}
+        <LoadingSpinner size={23} />
+      </div>
+    </>
+  );
+};
