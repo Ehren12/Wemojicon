@@ -1,28 +1,33 @@
-# Create T3 App
+# Wemojicon ❤️
+The all in one emoji app, where you can express yourself with only emojis 🙂
+https://wemote.vercel.app
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+### Current Features!
 
-## What's next? How do I make an app with this?
+ - Post Emojis 📬
+ - View User profiles and their emojis 👥
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+### Upcoming features 
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+ - Redesigned UI 🍎
+ - Emoji reactions bar for quickly posting your emojis. 🍫
+ - Emoji Games/Challenges 🥷
+ - - Emoji Quizzes 💣
+ - - The best emoji to describe a phrase 💬
+ - - Emoji Dojo - Using emojis to write a sentence ✍️
+ - Emoji DM's 🗨️
+ 
+ ### Tech Stack 
+ - Nextjs (Frontend) 🐥
+ - tRPC (API) 🎒
+ - Planetscale (Database) 💽
+ - Vercel (Deployment) 🖥️
+ 
+ ### Credit
+ Ehren Nwokocha is the proprietor of this repo. However the main idea and inspiration can be creditted to Theo creator of https://ping.gg and the creator of the T3 stack which is what is being used in this repo 🌚! He is also the creator of https://www.youtube.com/@t3dotgg. This project is more of an extension of one of his exsisting works.
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+### Contributors? 
 
-## Learn More
-
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
-
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
-
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
-
-## How do I deploy this?
-
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+Please feel free to contribute to this project! Also don't forget to star it and contribute to my other projects 💖💝
+ 
+ 
