@@ -59,21 +59,44 @@ export const postRouter = createTRPCRouter({
           id: input.postId,
         },
       });
-      if (!post) throw new TRPCError({code: "NOT_FOUND", message: "No Post exists with that is"})
-      return (await appendUserDataToPost([post]))[0]
+      if (!post)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "No Post exists with that is",
+        });
+      return (await appendUserDataToPost([post]))[0];
     }),
-  getAll: publicProcedure.query(async ({ ctx }) => {
-    const posts = await ctx.prisma.post.findMany({
-      take: 100,
-      orderBy: [
-        {
-          createdAt: "desc",
-        },
-      ],
-    });
+  getAll: publicProcedure
+    .input(
+      z.object({
+        limit: z.number().min(1).max(10).nullable(),
+        cursor: z.string().nullish(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const limit = input.limit ?? 5;
+      const { cursor } = input;
+      const posts = await ctx.prisma.post.findMany({
+        take: limit + 1,
+        skip: 0,
+        cursor: cursor ? { id: cursor } : undefined,
+        orderBy: [
+          {
+            createdAt: "desc",
+          },
+        ],
+      });
+      let nextCursor: typeof cursor | null = null;
+      if (posts.length > limit) {
+        const nextPost = posts.pop();
+        nextCursor = nextPost!.id;
+      }
 
-    return appendUserDataToPost(posts);
-  }),
+      return appendUserDataToPost(posts).then((result) => {
+        // attach a callback function
+        return { result, nextCursor }; // return an object with the result and the nextCursor
+      });
+    }),
   getAllPostsByUserId: publicProcedure
     .input(
       z.object({
