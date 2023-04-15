@@ -17,6 +17,7 @@ import { PostView } from "~/components/postview";
 import { PageLayout } from "~/components/layout";
 
 import { onPromise, useEmoji } from "~/clientHelpers/helperFunctions";
+import { useCallback, useEffect, useState } from "react";
 
 dayjs.extend(relativeTime);
 
@@ -61,7 +62,7 @@ const CreatePostWizard = () => {
   const onSubmit = (data: Input) => {
     mutate({ content: data.emoji });
   };
-  
+
   return (
     <div className="flex w-full gap-3">
       <Image
@@ -72,49 +73,107 @@ const CreatePostWizard = () => {
         height={56}
         priority
       />
-      <form className="flex grow" onSubmit={onPromise(handleSubmit(onSubmit))}>
-        <div className="flex flex-col grow">
-        <input
-          placeholder={`Hi, ${user.firstName} emote your feelings ${emoji}`}
-          className="grow bg-transparent outline-none"
-          type="text"
-          defaultValue={""}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              e.preventDefault();
-              if (watch("emoji") !== "") {
-                onSubmit;
+      <form className="flex grow justify-center items-center" onSubmit={onPromise(handleSubmit(onSubmit))}>
+        <div className="flex grow flex-col">
+          <input
+            placeholder={`Hi, ${user.firstName} emote your feelings ${emoji}`}
+            className="grow bg-transparent outline-none"
+            type="text"
+            defaultValue={""}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                if (watch("emoji") !== "") {
+                  onSubmit;
+                }
               }
-            }
-          }}
-          disabled={isPosting}
-          {...register("emoji")}
-        />
-        {errors.emoji && <p className="text-bold text-red-600">{user.firstName}{errors.emoji?.message}</p>}
+            }}
+            disabled={isPosting}
+            {...register("emoji")}
+          />
+          {errors.emoji && (
+            <p className="text-bold text-red-600">
+              {user.firstName}
+              {errors.emoji?.message}
+            </p>
+          )}
         </div>
         {watch("emoji") !== "" && !isPosting && (
-          <button type="submit" className="">Post</button>
+          <button type="submit" className="rounded bg-indigo-500 h-fit px-4 py-2 text-slate-200">
+            Post
+          </button>
         )}
         {isPosting && (
           <div className="flex items-center justify-center">
             <LoadingSpinner size={20} />
           </div>
         )}
-        
       </form>
     </div>
   );
 };
 
 const Feed = () => {
-  const { data, isLoading: postLoading } = api.posts.getAll.useQuery();
-  if (postLoading) return <LoadingPage />;
-  if (!data) return <div>Whoops...Seems something wen wrong</div>;
+  const postQuery = api.posts.getAll.useInfiniteQuery(
+    { limit: 5 },
+    { getNextPageParam: (lastpage) => lastpage.nextCursor }
+  );
+
+  const utils = api.useContext();
+
+  const { hasNextPage, isFetchingNextPage, fetchNextPage } = postQuery;
+
+  // list of emojis already rendered
+  const [posts, setPosts] = useState(() => {
+    const emojiPost = postQuery.data?.pages
+      .map((page) => page.result.map((item) => item).flat())
+      .flat();
+    return emojiPost;
+  });
+  type Post = NonNullable<typeof posts>[number];
+
+  const addMessages = useCallback((incoming?: Post[]) => {
+    setPosts((current) => {
+      const map: Record<Post["post"]["id"], Post> = {};
+      for (const msg of current ?? []) {
+        map[msg.post.id] = msg;
+      }
+      for (const msg of incoming ?? []) {
+        map[msg.post.id] = msg;
+      }
+      return Object.values(map).sort(
+        (a, b) => b.post.createdAt.getTime() - a.post.createdAt.getTime()
+      );
+    });
+  }, []);
+
+  useEffect(() => {
+    const emojiPost = postQuery.data?.pages
+      .map((page) => page.result.map((item) => item).flat())
+      .flat();
+    addMessages(emojiPost);
+  }, [postQuery.data?.pages, addMessages]);
+
+  if (postQuery.isLoading) return <LoadingPage />;
+  if (!postQuery.data) return <div>Whoops...Seems something wen wrong</div>;
   return (
     <div className="flex flex-col">
-      {data.map((fullPost) => (
+      {posts?.map((fullPost) => (
         <PostView {...fullPost} key={fullPost.post.id} />
       ))}
+      {hasNextPage ? (
+        <button
+          data-testid="loadMore"
+          onClick={onPromise(() => fetchNextPage())}
+          className="bg-indigo-500 px-4 py-2 text-white disabled:opacity-40"
+        >
+          {isFetchingNextPage ? "Loading more..." : hasNextPage && "Load More"}
+        </button>
+      ) : (
+        <div className="flex justify-center items-center p-4">
+          <p className="font-bold">{`🥳 You've reached the end!`}</p>
+        </div>
+      )}
     </div>
   );
 };
@@ -123,7 +182,10 @@ const Home: NextPage = () => {
   const { isLoaded: userLoaded, isSignedIn } = useUser();
   const emoji = useEmoji();
   // Start fetching immediately
-  api.posts.getAll.useQuery();
+  api.posts.getAll.useInfiniteQuery(
+    { limit: 5 },
+    { getNextPageParam: (lastpage) => lastpage.nextCursor }
+  );
   //Return empty div if user isn't loaded yet
   if (!userLoaded)
     return (
