@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import {type  SyntheticEvent, useEffect, useState } from "react";
 
 export function useEmoji() {
   const [emoji, setEmoji] = useState("");
@@ -9,4 +9,14 @@ export function useEmoji() {
     setEmoji(randomEmoji);
   }, []);
   return { emoji };
+}
+
+export function onPromise<T>(promise: (event: SyntheticEvent) => Promise<T>) {
+  return (event: SyntheticEvent) => {
+    if (promise) {
+      promise(event).catch((error) => {
+        console.log("Unexpected error", error);
+      });
+    }
+  };
 }
