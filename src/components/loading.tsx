@@ -1,4 +1,3 @@
-import { useEmoji } from "~/helperFunctions";
 
 export const LoadingSpinner = (props: { size?: number }) => {
   return (
@@ -27,7 +26,6 @@ export const LoadingSpinner = (props: { size?: number }) => {
 };
 
 export const LoadingPage = () => {
-  const {emoji} = useEmoji()
   return (
     <>
       <div className="absolute right-0 top-0 flex flex-col gap-5 h-screen w-screen items-center justify-center">
