@@ -21,7 +21,7 @@ import { onPromise, useEmoji } from "~/clientHelpers/helperFunctions";
 dayjs.extend(relativeTime);
 
 const schema = z.object({
-  emoji: z.string().emoji("only emojis man").min(1).max(280),
+  emoji: z.string().emoji(`, we only do emojis here 😒`).min(1).max(280),
 });
 
 type Input = z.infer<typeof schema>;
@@ -90,7 +90,7 @@ const CreatePostWizard = () => {
           disabled={isPosting}
           {...register("emoji")}
         />
-        {errors.emoji && <p className="text-bold text-red-600">{errors.emoji?.message}</p>}
+        {errors.emoji && <p className="text-bold text-red-600">{user.firstName}{errors.emoji?.message}</p>}
         </div>
         {watch("emoji") !== "" && !isPosting && (
           <button type="submit" className="">Post</button>
