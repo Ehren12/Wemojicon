@@ -14,6 +14,10 @@ const MyApp: AppType = ({ Component, pageProps }) => {
         <title>Wemojicon</title>
         <meta name="description" content="Express yourself with just emojis" />
         <link rel="icon" href="/favicon.ico" />
+        <meta
+          property="og:image"
+          content="https://wemote.vercel.app/api/og?username=myusername"
+        />
       </Head>
       <Toaster position="bottom-center" />
       <Component {...pageProps} />
