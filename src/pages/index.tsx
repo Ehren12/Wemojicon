@@ -118,9 +118,6 @@ const Feed = () => {
     { limit: 5 },
     { getNextPageParam: (lastpage) => lastpage.nextCursor }
   );
-
-  const utils = api.useContext();
-
   const { hasNextPage, isFetchingNextPage, fetchNextPage } = postQuery;
 
   // list of emojis already rendered

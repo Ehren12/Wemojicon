@@ -4,6 +4,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
 dayjs.extend(relativeTime);
 
 type PostWithUser = RouterOutputs["posts"]["getAll"]["result"][number];
@@ -19,6 +20,11 @@ export const PostView = (props: PostWithUser) => {
   const handleImageClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.stopPropagation();
   };
+
+  // useEffect(() => {
+  //   // Prefetch the posts pages
+  //   void router.prefetch(`/posts/${props.post.id}`)
+  // }, [router, props.post.id])
 
   return (
     <div
