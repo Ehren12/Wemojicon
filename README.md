@@ -22,9 +22,6 @@ https://wemote.vercel.app
  - tRPC (API) 🎒
  - Planetscale (Database) 💽
  - Vercel (Deployment) 🖥️
- 
- ### Credit
- Ehren Nwokocha is the proprietor of this repo. However the main idea and inspiration can be creditted to Theo creator of https://ping.gg and the creator of the T3 stack which is what is being used in this repo 🌚! He is also the creator of https://www.youtube.com/@t3dotgg. This project is more of an extension of one of his exsisting works.
 
 ### Contributors? 
 
