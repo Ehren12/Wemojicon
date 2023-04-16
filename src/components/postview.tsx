@@ -21,15 +21,10 @@ export const PostView = (props: PostWithUser) => {
     e.stopPropagation();
   };
 
-  // useEffect(() => {
-  //   // Prefetch the posts pages
-  //   void router.prefetch(`/posts/${props.post.id}`)
-  // }, [router, props.post.id])
-
   return (
     <div
       key={props.post.id}
-      className="flex cursor-pointer gap-3 border-b border-slate-400 px-4 hover:bg-gray-900"
+      className="flex cursor-pointer gap-3 border-b border-[#0E1C36]/20 px-4 hover:bg-[#f5f5f5]/30"
       onClick={handleClick}
     >
       <div className="flex h-full flex-col py-4">
@@ -48,18 +43,19 @@ export const PostView = (props: PostWithUser) => {
         className="flex h-full grow cursor-pointer flex-col"
         onClick={handleClick}
       >
-        <div className="h-full py-4">
-          <div className="flex gap-1 text-slate-300">
-            <Link href={`/@${props.author.username}`} onClick={handleImageClick}>
-              <span>{`@${props.author.username}`}</span>
+        <div className="flex flex-col gap-2 h-full py-4">
+          <div className="flex gap-1">
+            <Link href={`/@${props.author.username}`} onClick={handleImageClick} className="flex gap-1">
+              {props.author.firstName && (<span className="font-bold w-fit text-[#0E1C36]/60">{props.author.firstName}</span>)}
+              <span className="text-[#0E1C36]/40">{`@${props.author.username}`}</span>
             </Link>
             <Link href={`/posts/${props.post.id}`}>
-              <span className="font-thin">{` · ${dayjs(
+              <span className="font-thin text-[#0E1C36]/50">{` · ${dayjs(
                 props.post.createdAt
               ).fromNow()}`}</span>
             </Link>
           </div>
-          <span className="text-2xl">{props.post.content}</span>
+          <span className="text-3xl">{props.post.content}</span>
         </div>
       </div>
     </div>

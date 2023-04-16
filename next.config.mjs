@@ -8,7 +8,7 @@
 const config = {
   reactStrictMode: true,
   images: {
-    domains: ['images.clerk.dev', 'www.gravatar.com']
+    domains: ['images.clerk.dev', 'www.gravatar.com', 'tailwindui.com', 'images.unsplash.com']
   },
 
   /**

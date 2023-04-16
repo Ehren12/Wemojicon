@@ -65,32 +65,30 @@ const CreatePostWizard = () => {
 
   return (
     <div className="flex w-full gap-3">
-      <Image
-        src={user.profileImageUrl}
-        alt="Profile Image"
-        className="h-14 w-14 rounded-full"
-        width={56}
-        height={56}
-        priority
-      />
-      <form className="flex grow justify-center items-center" onSubmit={onPromise(handleSubmit(onSubmit))}>
+      <form
+        className="flex grow items-center justify-center"
+        onSubmit={onPromise(handleSubmit(onSubmit))}
+      >
         <div className="flex grow flex-col">
           <input
-            placeholder={`Hi, ${user.firstName} emote your feelings ${emoji}`}
+            placeholder={`Hi, ${user.firstName} type here ${emoji}`}
             className="grow bg-transparent outline-none"
             type="text"
             defaultValue={""}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 e.preventDefault();
-                if (watch("emoji") !== "") {
-                  onSubmit;
+                const emojiValue = watch("emoji");
+                if (emojiValue.trim() !== "") {
+                  const input = { content: emojiValue };
+                  mutate(input);
                 }
               }
             }}
             disabled={isPosting}
             {...register("emoji")}
           />
+
           {errors.emoji && (
             <p className="text-bold text-red-600">
               {user.firstName}
@@ -99,7 +97,10 @@ const CreatePostWizard = () => {
           )}
         </div>
         {watch("emoji") !== "" && !isPosting && (
-          <button type="submit" className="rounded bg-indigo-500 h-fit px-4 py-2 text-slate-200">
+          <button
+            type="submit"
+            className="h-fit rounded bg-[#5D675B] px-4 py-2 text-slate-200"
+          >
             Post
           </button>
         )}
@@ -167,7 +168,7 @@ const Feed = () => {
           {isFetchingNextPage ? "Loading more..." : hasNextPage && "Load More"}
         </button>
       ) : (
-        <div className="flex justify-center items-center p-4">
+        <div className="flex items-center justify-center p-4">
           <p className="font-bold">{`🥳 You've reached the end!`}</p>
         </div>
       )}
@@ -192,7 +193,7 @@ const Home: NextPage = () => {
     );
   return (
     <PageLayout>
-      <div className="flex border-b border-slate-400 p-4">
+      <div className="flex border-b border-[#0E1C36]/20 bg-[#F5F5F5] p-4">
         {!isSignedIn && (
           <div className="flex justify-center">
             <SignInButton />

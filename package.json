@@ -12,7 +12,9 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^4.15.0",
+    "@headlessui/react": "^1.7.14",
     "@hookform/resolvers": "^3.0.1",
+    "@phosphor-icons/react": "^2.0.8",
     "@prisma/client": "^4.11.0",
     "@tanstack/react-query": "^4.28.0",
     "@trpc/client": "^10.18.0",
