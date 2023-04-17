@@ -155,21 +155,79 @@ const Feed = () => {
   if (postQuery.isLoading) return <LoadingPage />;
   if (!postQuery.data) return <div>Whoops...Seems something wen wrong</div>;
   return (
-    <div className="flex flex-col">
+    <div className="flex h-full flex-col">
       {posts?.map((fullPost) => (
         <PostView {...fullPost} key={fullPost.post.id} />
       ))}
-      {hasNextPage ? (
-        <button
-          data-testid="loadMore"
-          onClick={onPromise(() => fetchNextPage())}
-          className="bg-indigo-500 px-4 py-2 text-white disabled:opacity-40"
-        >
-          {isFetchingNextPage ? "Loading more..." : hasNextPage && "Load More"}
-        </button>
-      ) : (
-        <div className="flex items-center justify-center p-4">
-          <p className="font-bold">{`🥳 You've reached the end!`}</p>
+      <div className="mt-auto">
+        {hasNextPage ? (
+          <button
+            data-testid="loadMore"
+            onClick={onPromise(() => fetchNextPage())}
+            className="w-full bg-indigo-500 px-4 py-2 text-white disabled:opacity-40"
+          >
+            {isFetchingNextPage
+              ? "Loading more..."
+              : hasNextPage && "Load More"}
+          </button>
+        ) : (
+          <div className="flex items-center justify-center p-4 md:relative md:bottom-0 md:w-full ">
+            <p className="font-bold">{`🥳 You've reached the end!`}</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const EmojiBar = () => {
+  const { multipleRandom } = useEmoji();
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    formState: { errors },
+  } = useForm<Input>({
+    defaultValues: {
+      emoji: "",
+    },
+    resolver: zodResolver(schema),
+  });
+  const ctx = api.useContext();
+  const { mutate, isLoading: isPosting } = api.posts.create.useMutation({
+    onSuccess: () => {
+      void ctx.posts.getAll.invalidate();
+    },
+    onError: (e) => {
+      const errorMessage = e.data?.zodError?.fieldErrors.content;
+      if (errorMessage && errorMessage[0]) {
+        toast.error(errorMessage[0]);
+      } else {
+        toast.error("Failed to post your emoji 😔. Try again later!");
+      }
+    },
+  });
+  return (
+    <div className="fixed bottom-11 left-1/2 z-50 flex w-fit -translate-x-1/2 items-center justify-center rounded-full border border-[#0E1C36]/20 bg-white/50 px-5 py-4 shadow-xl backdrop-blur-md">
+      {!isPosting && (
+        <div className="flex gap-1">
+          {multipleRandom.map((emoji) => (
+            <button
+              key={emoji}
+              className="flex rounded-md mr-2 text-2xl drop-shadow-lg hover:bg-[#f5f5f5] hover:border hover:border-[#0E1C36]/20 hover:text-[#0E1C36]/80 hover:drop-shadow-xl active:bg-[#f5f5f5] active:border active:border-[#0E1C36]/20 active: text-center"
+              onClick={() => {
+                mutate({ content: emoji });
+              }}
+            >
+              {emoji}
+            </button>
+          ))}
+        </div>
+      )}
+      {isPosting && (
+        <div className="flex items-center justify-center">
+          <LoadingSpinner size={20} />
         </div>
       )}
     </div>
@@ -202,6 +260,7 @@ const Home: NextPage = () => {
         {isSignedIn && <CreatePostWizard />}
       </div>
       <Feed />
+      <EmojiBar />
     </PageLayout>
   );
 };
