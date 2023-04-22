@@ -260,7 +260,7 @@ const Home: NextPage = () => {
         {isSignedIn && <CreatePostWizard />}
       </div>
       <Feed />
-      <EmojiBar />
+      {isSignedIn && <EmojiBar /> }
     </PageLayout>
   );
 };
